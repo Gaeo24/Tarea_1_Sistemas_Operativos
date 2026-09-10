@@ -10,7 +10,7 @@ int main(int, char**){
 
     //loop que se ejecuta hasta que alguna condicion de detencion se cumpla
     do{
-        fprintf(stdout, "> "); //imprime prompt en consola, hay que cambiarlo por una función que cumpla los requisitos
+        imprimir_prompt(); //imprime prompt en consola, hay que cambiarlo por una función que cumpla los requisitos
         linea = leer_linea(); //lee la linea desde consola
         tokens = parsear_linea(linea); //parsea la linea en argumentos dentro de un arreglo
         status = lanzar_proceso(tokens); //ejecuta el comando ingresado

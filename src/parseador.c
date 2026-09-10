@@ -1,5 +1,22 @@
 #include <parseador.h>
 
+//muestra el directorio actual como parte del prompt de la shell
+void imprimir_prompt(){
+    //getcwd reserva automaticamente un espacio del tamaño necesario
+    char *cwd = getcwd(NULL, 0);
+
+    if (cwd != NULL){
+        //imprime el prompt y libera la memoria reservada por getcwd
+        fprintf(stdout, "miShell:%s$ ", cwd);
+        //asegura que el prompt aparezca inmediatamente en pantalla
+        fflush(stdout);
+        free(cwd);
+    } else {
+        //muestra un error si no se pudo obtener el directorio actual
+        perror("error de getcwd()");
+    }
+}
+
 //lee una linea completa desde la entrada estandar (stdin)
 char *leer_linea(){
     char *linea = NULL;
