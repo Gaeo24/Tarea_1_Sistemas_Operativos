@@ -33,3 +33,18 @@ static ComandoInterno tabla_comandos[] = {
 
     {NULL, NULL} // Centinela que indica el fin del arreglo
 };
+
+//Comparamos el string ingresado con los comandos internos en el arreglo.
+int ejecutar_comandos_internos(char **tokens) {
+    if (tokens[0] == NULL) return 0;
+
+    //Recorremos el arreglo comparando
+    for (int i = 0; tabla_comandos[i].nombre != NULL; i++) {
+        if (strcmp(tokens[0], tabla_comandos[i].nombre) == 0) {
+            tabla_comandos[i].funcion(tokens); // Ejecutamos el código asociado al comando (función).
+            return 1; 
+        }
+    }
+
+    return 0; //Si el comando interno no está en la tabla...
+}
