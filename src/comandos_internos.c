@@ -15,3 +15,21 @@ static void ejecutar_exit(char **args) {
     int status = args[1] != NULL ? atoi(args[1]) : 0;
     exit(status);
 }
+
+//Estructura para poder asociar el nombre de un comando (ej: exit) con su código respectivo (función).
+typedef struct {
+    char *nombre;
+    void (*funcion)(char **args); // Puntero a función
+} ComandoInterno;
+
+//Arreglo para poder buscar comandos internos (se evita recurrir a muchos condicionales).
+static ComandoInterno tabla_comandos[] = {
+    {"cd", ejecutar_cd},
+    {"exit", ejecutar_exit},
+
+    // DESCOMENTAR UNA VEZ IMPLEMENTADOS:
+    // {"jobs", ejecutar_jobs},
+    // {"pmon", ejecutar_pmon},
+
+    {NULL, NULL} // Centinela que indica el fin del arreglo
+};
