@@ -5,7 +5,14 @@
 static void ejecutar_cd(char **args, ShellState *shellState) {
     (void)shellState;//Aquí no se usa, pero declararlo evita warnings.
     
-    char *dir = args[1] != NULL ? args[1] : getenv("HOME");//Verifica argumento luego de cd
+    //Se validan exceso de argumentos.
+    if (args[1] != NULL && args[2] != NULL) {
+        fprintf(stderr, "miShell: cd: demasiados argumentos\n");
+        return; 
+    }
+    
+    //Verifica argumento luego de cd
+    char *dir = args[1] != NULL ? args[1] : getenv("HOME");
     //Si no está definido "HOME" lanza error.
     if (dir == NULL) fprintf(stderr, "miShell: cd: HOME no definido\n");
     //Se intenta cambiar de directorio, si no es posible, lanza error.
