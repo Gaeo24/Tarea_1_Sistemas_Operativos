@@ -1,6 +1,7 @@
 #include <shell.h>
 #include <parseador.h>
 #include <ejecutar.h>
+#include <comandos_internos.h>
 
 
 int main(int, char**){
@@ -14,8 +15,11 @@ int main(int, char**){
         linea = leer_linea(); //lee la linea desde consola
         tokens = parsear_linea(linea); //parsea la linea en argumentos dentro de un arreglo
         if (tokens[0] == NULL) continue;//Se verifica si no se escribió nada.
-        status = lanzar_proceso(tokens); //ejecuta el comando ingresado
         
+        if (ejecutar_comando_internos(tokens[0])) {
+            status = lanzar_proceso(tokens); //ejecuta el comando ingresado
+        }
+
         free(linea); //libera memoria de linea y tokens en cada iteración
         free(tokens);
     } while (status);
