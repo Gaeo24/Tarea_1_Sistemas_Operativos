@@ -18,8 +18,10 @@ int main(int, char**){
         tokens = parsear_linea(linea); //parsea la linea en argumentos dentro de un arreglo
        
         if (tokens[0] != NULL){//Se verifica si no se escribió nada.
+            //Se verifica si es comando interno.
             if (!ejecutar_comando_internos(tokens, &shellState)) {
-            shellState.running = lanzar_proceso(tokens); //ejecuta el comando ingresado
+                //Si no lo encuentra, busca en comandos externos.
+                shellState.running = lanzar_proceso(tokens);
             }
         }
 

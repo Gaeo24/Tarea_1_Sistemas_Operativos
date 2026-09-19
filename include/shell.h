@@ -12,7 +12,7 @@ typedef struct {
     int activo;         //Estado del proceso. (Slot libre/ocupado)
 } Job;
 
-//Struct que concentra datos de la shell
+//Struct que concentra datos de la shell.
 typedef struct {
     int running;            //Define si el programa continua o no.
     int exit_status;        //Almacena el estado de salida si se usó exit.
