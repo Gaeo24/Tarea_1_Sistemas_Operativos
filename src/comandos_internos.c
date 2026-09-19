@@ -1,3 +1,4 @@
+#include <signal.h>
 #include <comandos_internos.h>
 #include <shell.h>
 
@@ -26,6 +27,34 @@ static void ejecutar_exit(char **args, ShellState *shellState) {
     shellState->running = 0; //El ciclo terminará limpiamente.
 }
 
+//Comando jobs
+static void ejecutar_jobs(char **args, ShellState *shellState) {
+    (void)args;
+
+    //Creamos una máscara y añadimos SIGCHLD
+    sigset_t mascara_bloqueo, mascara_original;
+    sigemptyset(&mascara_bloqueo);
+    sigaddset(&mascara_bloqueo, SIGCHLD);
+
+    //Aplicamos la configuración (bloqueamos) y conservamos la original.
+    sigprocmask(SIG_BLOCK, &mascara_bloqueo, &mascara_original);
+
+    //Imprimimos los jobs
+    for (int i = 0; i < shellState->capacidad_jobs; i++) {
+        // Solo imprimimos si la ranura está activa
+        if (shellState->jobs[i].activo) {
+            // Imprime en el formato pedido: [1] Ejecutando sleep 30
+            printf("[%d]\tPID: %d\tEstado: Ejecutando\t%s\n", 
+                   shellState->jobs[i].id, 
+                   shellState->jobs[i].pid, 
+                   shellState->jobs[i].comando);
+        }
+    }
+
+    //Desbloqueamos las señales
+    sigprocmask(SIG_SETMASK, &mascara_original, NULL);
+}
+
 //Estructura para poder asociar el nombre de un comando (ej: exit) con su código respectivo (función).
 typedef struct {
     char *nombre;
@@ -36,9 +65,7 @@ typedef struct {
 static ComandoInterno tabla_comandos[] = {
     {"cd", ejecutar_cd},
     {"exit", ejecutar_exit},
-
-    // DESCOMENTAR UNA VEZ IMPLEMENTADOS:
-    // {"jobs", ejecutar_jobs},
+    {"jobs", ejecutar_jobs},
     // {"pmon", ejecutar_pmon},
 
     {NULL, NULL} // Centinela que indica el fin del arreglo
