@@ -5,6 +5,7 @@ add_executable(tarea_so_1
 	src/main.c
 	src/parseador.c
 	src/ejecutar.c
+	src/comandos_internos.c
 	src/redireccion.c
 )
 target_include_directories(tarea_so_1 PRIVATE include)
