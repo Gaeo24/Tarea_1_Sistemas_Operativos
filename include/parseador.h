@@ -1,3 +1,6 @@
+#ifndef PARSEADOR
+#define PARSEADOR
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -9,3 +12,5 @@
 void imprimir_prompt(void);
 char *leer_linea(void);
 char **parsear_linea(char *linea);
+
+#endif
