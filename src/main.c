@@ -19,7 +19,7 @@ int main(int, char**){
        
         if (tokens[0] != NULL){//Se verifica si no se escribió nada.
             //Se verifica si es comando interno.
-            if (!ejecutar_comando_internos(tokens, &shellState)) {
+            if (!ejecutar_comandos_internos(tokens, &shellState)) {
                 //Si no lo encuentra, busca en comandos externos.
                 shellState.exit_status = lanzar_proceso(tokens);
             }

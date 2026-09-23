@@ -7,6 +7,6 @@
 #include <string.h>
 #include <shell.h>
 
-int ejecutar_comando_internos(char **tokens, ShellState *shellState);
+int ejecutar_comandos_internos(char **tokens, ShellState *shellState);
 
 #endif
