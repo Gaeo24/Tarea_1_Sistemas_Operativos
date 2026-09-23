@@ -83,7 +83,7 @@ static ComandoInterno tabla_comandos[] = {
 };
 
 //Compara el string ingresado con los comandos internos en el arreglo.
-int ejecutar_comando_internos(char **tokens, ShellState *shellState) {
+int ejecutar_comandos_internos(char **tokens, ShellState *shellState) {
     if (tokens[0] == NULL) return 0;
 
     //Recorre el arreglo comparando con el nombre (String).
