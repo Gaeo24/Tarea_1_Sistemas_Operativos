@@ -24,10 +24,12 @@ char *leer_linea(){
 
     if (getline(&linea, &buffersize, stdin) == -1){
         if (feof(stdin)){ //maneja EOF (ctrl+D)
-            exit(EXIT_SUCCESS); 
+            if (linea) free(linea);
+            return strdup("exit 0"); //Cerramos limpiamente.
         } else {
             perror("error: leer_linea");
-            exit(EXIT_FAILURE);
+            if (linea) free(linea);
+            return strdup("exit 1"); //Cerramos limpiamente.
         }
     }
     
