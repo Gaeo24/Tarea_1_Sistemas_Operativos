@@ -3,7 +3,20 @@
 #include <ejecutar.h>
 #include <comandos_internos.h>
 
+static void ejecutar_entrada(char **tokens, ShellState *shellState){
+    if (tokens[0] == NULL) {
+        return;
+    }
 
+    if (contiene_pipe(tokens)){
+        shellState->exit_status = ejecutar_pipeline(tokens);
+        return;
+    }
+
+    if (!ejecutar_comandos_internos(tokens, shellState)){
+        shellState->exit_status = lanzar_proceso(tokens);
+    }
+}
 int main(int, char**){
     char *linea;
     char **tokens;
@@ -17,13 +30,7 @@ int main(int, char**){
         linea = leer_linea(); //lee la linea desde consola
         tokens = parsear_linea(linea); //parsea la linea en argumentos dentro de un arreglo
         
-        if (tokens[0] != NULL){//Se verifica si no se escribió nada.
-            //Se verifica si es comando interno.
-            if (!ejecutar_comandos_internos(tokens, &shellState)) {
-                //Si no lo encuentra, busca en comandos externos.
-                shellState.exit_status = lanzar_proceso(tokens);
-            }
-        }
+        ejecutar_entrada(tokens, &shellState);
 
         free(tokens);
         free(linea); //libera memoria de linea y tokens en cada iteración
