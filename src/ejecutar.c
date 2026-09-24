@@ -35,3 +35,13 @@ int lanzar_proceso(char **tokens){
     return 1;
     }
 }
+
+int contiene_pipe(char **tokens){
+    for (int indice = 0; tokens[indice] != NULL; indice++){
+        if (strcmp(tokens[indice], "|") == 0){
+            return 1;
+        }
+    }
+
+    return 0;
+}
