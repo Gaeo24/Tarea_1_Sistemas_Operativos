@@ -16,7 +16,7 @@ int main(int, char**){
         imprimir_prompt(); //imprime prompt en consola, hay que cambiarlo por una función que cumpla los requisitos
         linea = leer_linea(); //lee la linea desde consola
         tokens = parsear_linea(linea); //parsea la linea en argumentos dentro de un arreglo
-       
+        
         if (tokens[0] != NULL){//Se verifica si no se escribió nada.
             //Se verifica si es comando interno.
             if (!ejecutar_comandos_internos(tokens, &shellState)) {
@@ -25,8 +25,8 @@ int main(int, char**){
             }
         }
 
-        free(linea); //libera memoria de linea y tokens en cada iteración
         free(tokens);
+        free(linea); //libera memoria de linea y tokens en cada iteración
     } while (shellState.running);
 
     return shellState.exit_status;
