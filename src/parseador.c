@@ -19,7 +19,7 @@ void imprimir_prompt(){
 
 //agrega espacios alrededor de cada pipe para que strtok los detecte
 static char *normalizar_linea(const char *linea){
-    size_t capacidad = strlen(linea);
+    size_t capacidad = strlen(linea) * 3 + 1;
     char *resultado = malloc(capacidad);
     size_t indice = 0;
 
