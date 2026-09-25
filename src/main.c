@@ -2,30 +2,48 @@
 #include <parseador.h>
 #include <ejecutar.h>
 #include <comandos_internos.h>
+#include <ej_background.h>
 
 
-int main(int, char**){
+int main(void){
     char *linea;
     char **tokens;
+    int background;
+    ShellState shellState;
 
-    //Inicializamos el estado de la shell
-    ShellState shellState = {.running = 1, .exit_status = 0};
+    /* Inicializamos el estado de la shell */
+    shellState.running = 1;
+    shellState.exit_status = 0;
+    shellState.jobs = NULL;
+    shellState.capacidad_jobs = 0;
+    shellState.siguiente_job_id = 1;
+    /*config de sigchld*/
+    if (configurar_sigchld(&shellState) == -1) {
+        fprintf(stderr, "Error al configurar SIGCHLD\n");
+        return EXIT_FAILURE;
+    }
 
-    //loop que se ejecuta hasta que alguna condicion de detencion se cumpla
+    /* Loop que se ejecuta hasta que alguna condicion de detencion se cumpla */
     do{
-        imprimir_prompt(); //imprime prompt en consola, hay que cambiarlo por una función que cumpla los requisitos
-        linea = leer_linea(); //lee la linea desde consola
-        tokens = parsear_linea(linea); //parsea la linea en argumentos dentro de un arreglo
+        mostrar_job_terminado(&shellState); /* muestra los jobs que terminaron */
+        imprimir_prompt(); /* imprime prompt en consola */
+        linea = leer_linea(); /* lee la linea desde consola */
+        tokens = parsear_linea(linea); /* parsea la linea en argumentos */
        
-        if (tokens[0] != NULL){//Se verifica si no se escribió nada.
+        if (tokens[0] != NULL){ /* Se verifica si no se escribió nada. */
+            background = encontrar_background(tokens);
+            if (background) {
+                quitar_background(tokens); /* quita el & de la orden */
+            }
             if (!ejecutar_comando_internos(tokens, &shellState)) {
-            shellState.running = lanzar_proceso(tokens); //ejecuta el comando ingresado
+                shellState.running = lanzar_proceso(tokens, background, &shellState);
             }
         }
 
-        free(linea); //libera memoria de linea y tokens en cada iteración
+        free(linea); /* libera memoria de linea */
         free(tokens);
     } while (shellState.running);
-
+    /* libera memoria de jobs */
+    free(shellState.jobs);
     return shellState.exit_status;
 }
