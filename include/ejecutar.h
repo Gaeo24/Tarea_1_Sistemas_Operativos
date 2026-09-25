@@ -8,5 +8,5 @@
 
 int lanzar_proceso(char **tokens);
 int contiene_pipe(char **tokens);
-//int ejecutar_pipeline(char **tokens);
+int ejecutar_pipeline(char **tokens);
 #endif
