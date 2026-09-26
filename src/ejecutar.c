@@ -1,6 +1,8 @@
 #include <ejecutar.h>
 #include <ej_background.h>
 #include <errno.h>
+#include <redireccion.h>
+
 
 /*crea un proceso hijo para ejecutar el comando ingresado*/
 int lanzar_proceso(char **tokens,int background, ShellState *shellState){
@@ -21,6 +23,16 @@ int lanzar_proceso(char **tokens,int background, ShellState *shellState){
         /* desbloquea sigchld en el proceso hijo */
         sigprocmask(SIG_SETMASK, &mascara_anterior, NULL); 
         if(execvp(tokens[0], tokens) == -1){
+        //guarda argumentos, sin operadores de redireccion
+        char *arg[256];     
+
+        //procesar redireccion devuelve la cantidad de argumentos, o -1 si ocurre un error
+        if(procesar_redireccion(tokens, arg) <= 0){
+            _exit(1);
+        }
+
+        //el proceso hijo reemplaza su programa por el comando indicado
+        if(execvp(arg[0], arg) == -1){
             perror("error");
         }
         exit(EXIT_FAILURE);

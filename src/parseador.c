@@ -23,11 +23,13 @@ char *leer_linea(){
     size_t buffersize = 0;
 
     if (getline(&linea, &buffersize, stdin) == -1){
-        if (feof(stdin)){ /* maneja EOF (ctrl+D) */
-            exit(EXIT_SUCCESS); 
+        if (feof(stdin)){ //maneja EOF (ctrl+D)
+            if (linea) free(linea);
+            return strdup("exit 0"); //Cerramos limpiamente.
         } else {
             perror("error: leer_linea");
-            exit(EXIT_FAILURE);
+            if (linea) free(linea);
+            return strdup("exit 1"); //Cerramos limpiamente.
         }
     }
     

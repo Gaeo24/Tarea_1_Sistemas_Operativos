@@ -1,5 +1,5 @@
-#ifndef SHEL_H
-#define SHEL_H
+#ifndef SHELL
+#define SHELL
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -14,7 +14,7 @@ typedef struct {
     int pendiente;      /*Indica si el proceso terminó pero no se ha mostrado.*/
 } Job;
 
-/*Struct que concentra datos de la shell*/
+//Struct que concentra datos de la shell.
 typedef struct {
     int running;            /*Define si el programa continua o no.*/
     int exit_status;        /*Almacena el estado de salida si se usó exit.*/

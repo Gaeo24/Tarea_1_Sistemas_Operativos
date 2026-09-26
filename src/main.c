@@ -35,7 +35,7 @@ int main(void){
             if (background) {
                 quitar_background(tokens); /* quita el & de la orden */
             }
-            if (!ejecutar_comando_internos(tokens, &shellState)) {
+            if (!ejecutar_comandos_internos(tokens, &shellState)) {
                 shellState.running = lanzar_proceso(tokens, background, &shellState);
             }
         }
