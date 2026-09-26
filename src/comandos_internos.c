@@ -2,6 +2,22 @@
 #include <comandos_internos.h>
 #include <shell.h>
 
+// Banderas globales exclusivas para pmon
+volatile sig_atomic_t pmon_corriendo = 1;
+volatile sig_atomic_t pmon_imprimir = 1;
+
+// Manejador que se activa cada vez que la alarma suena (pmon)
+static void manejador_pmon_alarma(int sig) {
+    (void)sig;
+    pmon_imprimir = 1; // Avisamos que hay que redibujar la tabla
+}
+
+// Manejador que se activa al presionar Ctrl+C
+static void manejador_pmon_salir(int sig) {
+    (void)sig;
+    pmon_corriendo = 0; // Avisamos que hay que romper el ciclo principal
+}
+
 //Comando cd
 static void ejecutar_cd(char **args, ShellState *shellState) {
     (void)shellState;//Aquí no se usa, pero declararlo evita warnings.
