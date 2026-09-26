@@ -4,8 +4,21 @@
 #include <comandos_internos.h>
 #include <ej_background.h>
 
+static void ejecutar_entrada(char **tokens, ShellState *shellState){
+    if (tokens[0] == NULL) {
+        return;
+    }
 
-int main(void){
+    if (contiene_pipe(tokens)){
+        shellState->exit_status = ejecutar_pipeline(tokens);
+        return;
+    }
+
+    if (!ejecutar_comandos_internos(tokens, shellState)){
+        shellState->exit_status = lanzar_proceso(tokens);
+    }
+}
+int main(int, char**){
     char *linea;
     char **tokens;
     int background;
@@ -29,6 +42,8 @@ int main(void){
         imprimir_prompt(); /* imprime prompt en consola */
         linea = leer_linea(); /* lee la linea desde consola */
         tokens = parsear_linea(linea); /* parsea la linea en argumentos */
+      
+        ejecutar_entrada(tokens, &shellState);
        
         if (tokens[0] != NULL){ /* Se verifica si no se escribió nada. */
             background = encontrar_background(tokens);
@@ -39,9 +54,9 @@ int main(void){
                 shellState.running = lanzar_proceso(tokens, background, &shellState);
             }
         }
-
-        free(linea); /* libera memoria de linea */
+      
         free(tokens);
+        free(linea); //libera memoria de linea y tokens en cada iteración
     } while (shellState.running);
     /* libera memoria de jobs */
     free(shellState.jobs);

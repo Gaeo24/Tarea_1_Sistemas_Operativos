@@ -8,5 +8,7 @@
 #include <shell.h>
 
 int lanzar_proceso(char **tokens,int background, ShellState *shellState);
+int contiene_pipe(char **tokens);
+int ejecutar_pipeline(char **tokens);
 
 #endif

@@ -17,7 +17,32 @@ void imprimir_prompt(){
     }
 }
 
-/* lee una linea completa desde la entrada estandar (stdin) */
+//agrega espacios alrededor de cada pipe para que strtok los detecte
+static char *normalizar_linea(const char *linea){
+    size_t capacidad = strlen(linea) * 3 + 1;
+    char *resultado = malloc(capacidad);
+    size_t indice = 0;
+
+    if (resultado == NULL) {
+        perror("error de malloc");
+        exit(EXIT_FAILURE);
+    }
+
+    for (size_t i=0; linea[i] != '\0'; i++){
+        if (linea[i] == '|'){
+            resultado[indice++] = ' ';
+            resultado[indice++] = '|';
+            resultado[indice++] = ' ';
+        } else {
+            resultado[indice++] = linea[i];
+        }
+    }
+
+    resultado[indice] = '\0';
+    return resultado;
+}
+
+//lee una linea completa desde la entrada estandar (stdin)
 char *leer_linea(){
     char *linea = NULL;
     size_t buffersize = 0;
@@ -32,8 +57,10 @@ char *leer_linea(){
             return strdup("exit 1"); //Cerramos limpiamente.
         }
     }
-    
-    return linea;
+    char *linea_normalizada = normalizar_linea(linea);
+    free(linea);
+
+    return linea_normalizada;
 }
 
 /* divide la linea ingresada en tokens separados por espacios */
@@ -54,6 +81,11 @@ char **parsear_linea(char *linea){
         if (indice >= buffersize) {
             buffersize += TOKEN_BUFFER_SIZE;
             tokens = realloc(tokens, buffersize * sizeof(char*));
+
+            if (tokens == NULL){
+                perror("error de realloc");
+                exit(EXIT_FAILURE);
+            }
         }
 
         token = strtok(NULL, TOKEN_DELIMITERS);
