@@ -2,9 +2,9 @@
 #include <comandos_internos.h>
 #include <shell.h>
 
-//Comando cd
+/* Comando cd */
 static void ejecutar_cd(char **args, ShellState *shellState) {
-    (void)shellState;//Aquí no se usa, pero declararlo evita warnings.
+    (void)shellState;/*Aquí no se usa, pero declararlo evita warnings.*/
     
     //Se valida exceso de argumentos.
     if (args[1] != NULL && args[2] != NULL) {
@@ -14,13 +14,13 @@ static void ejecutar_cd(char **args, ShellState *shellState) {
     
     //Verifica argumento luego de cd.
     char *dir = args[1] != NULL ? args[1] : getenv("HOME");
-    //Si no está definido "HOME" lanza error.
+    /*Si no está definido "HOME" lanza error.*/
     if (dir == NULL) fprintf(stderr, "miShell: cd: HOME no definido\n");
-    //Se intenta cambiar de directorio, si no es posible, lanza error.
+    /*Se intenta cambiar de directorio, si no es posible, lanza error.*/
     else if (chdir(dir) != 0) perror("miShell: cd");
 }
 
-//Comando exit
+/*Comando exit*/
 static void ejecutar_exit(char **args, ShellState *shellState) {
     //Se valida exceso de argumentos.
     if (args[1] != NULL && args[2] != NULL) {
@@ -30,10 +30,10 @@ static void ejecutar_exit(char **args, ShellState *shellState) {
 
     //Antes de cerrar la shell, se guarda estado si el usuario lo ingresó. Por defecto 0.
     shellState->exit_status = args[1] != NULL ? atoi(args[1]) : 0;
-    shellState->running = 0; //El ciclo terminará limpiamente.
+    shellState->running = 0; /*El ciclo terminará limpiamente.*/
 }
 
-//Comando jobs
+/*Comando jobs*/
 static void ejecutar_jobs(char **args, ShellState *shellState) {
     //Se valida exceso de argumentos.
     if (args[1] != NULL) {
@@ -72,12 +72,12 @@ typedef struct {
     void (*funcion)(char **args, ShellState *shellState); // Puntero a función.
 } ComandoInterno;
 
-//Arreglo para poder buscar comandos internos (se evita recurrir a muchos condicionales).
+/*Arreglo para poder buscar comandos internos (se evita recurrir a muchos condicionales).*/
 static ComandoInterno tabla_comandos[] = {
     {"cd", ejecutar_cd},
     {"exit", ejecutar_exit},
     {"jobs", ejecutar_jobs},
-    // {"pmon", ejecutar_pmon},
+    /* {"pmon", ejecutar_pmon},*/
 
     {NULL, NULL} //Indica fin del arreglo
 };
@@ -94,5 +94,5 @@ int ejecutar_comandos_internos(char **tokens, ShellState *shellState) {
         }
     }
 
-    return 0; //Si el comando interno no está en la tabla...
+    return 0; /*Si el comando interno no está en la tabla...*/
 }
