@@ -91,7 +91,7 @@ static const char* traducir_estado(char e) {
 }
 
 //Comando pmon
-static void ejecutar_pmon(char **args, ShellState *shellState) {
+void ejecutar_pmon(char **args, ShellState *shellState) {
     //Si no se entregan segundos, por defecto 2.
     int segundos = 2;
     if (args[1] != NULL) {
