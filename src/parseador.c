@@ -1,18 +1,18 @@
 #include <parseador.h>
 
-//muestra el directorio actual como parte del prompt de la shell
+/* muestra el directorio actual como parte del prompt de la shell */
 void imprimir_prompt(){
-    //getcwd reserva automaticamente un espacio del tamaño necesario
+    /* getcwd reserva automaticamente un espacio del tamaño necesario */
     char *cwd = getcwd(NULL, 0);
 
     if (cwd != NULL){
-        //imprime el prompt y libera la memoria reservada por getcwd
+        /* imprime el prompt y libera la memoria reservada por getcwd */
         fprintf(stdout, "miShell:%s$ ", cwd);
-        //asegura que el prompt aparezca inmediatamente en pantalla
+        /* asegura que el prompt aparezca inmediatamente en pantalla */
         fflush(stdout);
         free(cwd);
     } else {
-        //muestra un error si no se pudo obtener el directorio actual
+        /* muestra un error si no se pudo obtener el directorio actual */
         perror("error de getcwd()");
     }
 }
@@ -63,7 +63,7 @@ char *leer_linea(){
     return linea_normalizada;
 }
 
-//divide la linea ingresada en tokens separados por espacios
+/* divide la linea ingresada en tokens separados por espacios */
 char **parsear_linea(char *linea){
     int buffersize = TOKEN_BUFFER_SIZE;
     char *token;
@@ -71,13 +71,13 @@ char **parsear_linea(char *linea){
 
     token = strtok(linea, TOKEN_DELIMITERS);
     
-    //recorre la linea y guarda cada token en el arreglo
+    /* recorre la linea y guarda cada token en el arreglo */
     int indice = 0;
     while (token != NULL){
         tokens[indice] = token;
         indice++;
         
-        //aumenta el espacio si el arreglo se queda sin capacidad
+        /* aumenta el espacio si el arreglo se queda sin capacidad */
         if (indice >= buffersize) {
             buffersize += TOKEN_BUFFER_SIZE;
             tokens = realloc(tokens, buffersize * sizeof(char*));
@@ -91,7 +91,7 @@ char **parsear_linea(char *linea){
         token = strtok(NULL, TOKEN_DELIMITERS);
     }
 
-    //marca el final del arreglo tokens
+    /* marca el final del arreglo tokens */
     tokens[indice] = NULL;
     return tokens;
 }
