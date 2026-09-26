@@ -1,6 +1,7 @@
 #include <signal.h>
 #include <comandos_internos.h>
 #include <shell.h>
+#include <pmon.h>
 
 /* Comando cd */
 static void ejecutar_cd(char **args, ShellState *shellState) {
@@ -77,7 +78,7 @@ static ComandoInterno tabla_comandos[] = {
     {"cd", ejecutar_cd},
     {"exit", ejecutar_exit},
     {"jobs", ejecutar_jobs},
-    /* {"pmon", ejecutar_pmon},*/
+    {"pmon", ejecutar_pmon},
 
     {NULL, NULL} //Indica fin del arreglo
 };
