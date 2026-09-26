@@ -13,6 +13,7 @@ add_executable(tarea_so_1
 	src/comandos_internos.c
 	src/redireccion.c
 	src/senales.c
+	src/pmon.c
 )
 target_include_directories(tarea_so_1 PRIVATE include)
 target_compile_definitions(tarea_so_1 PRIVATE _POSIX_C_SOURCE=200809L)
