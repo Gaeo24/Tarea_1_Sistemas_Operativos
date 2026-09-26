@@ -29,9 +29,15 @@ static char *normalizar_linea(const char *linea){
     }
 
     for (size_t i=0; linea[i] != '\0'; i++){
-        if (linea[i] == '|'){
+        if (linea[i] == '|' || linea [i] == '<' || linea[i] == '>'){
             resultado[indice++] = ' ';
-            resultado[indice++] = '|';
+            resultado[indice++] = linea[i];
+
+            if(linea[i] == '>' && linea[i+1] == '>'){
+                resultado[indice++] = '>';
+                i++;
+            }
+
             resultado[indice++] = ' ';
         } else {
             resultado[indice++] = linea[i];

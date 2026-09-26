@@ -1,4 +1,4 @@
-#include "redireccion.h"
+#include <redireccion.h>
 
 int procesar_redireccion(char **tokens, char **args){
     char *archivo_input = NULL;    

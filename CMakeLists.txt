@@ -12,6 +12,7 @@ add_executable(tarea_so_1
 	src/ej_background.c
 	src/comandos_internos.c
 	src/redireccion.c
+	src/senales.c
 	src/pmon.c
 )
 target_include_directories(tarea_so_1 PRIVATE include)
