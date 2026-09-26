@@ -2,6 +2,7 @@
 #include <ej_background.h>
 #include <errno.h>
 #include <redireccion.h>
+#include <senales.h>
 
 
 /*crea un proceso hijo para ejecutar el comando ingresado*/
@@ -19,10 +20,14 @@ int lanzar_proceso(char **tokens,int background, ShellState *shellState){
     /* crea una copia del proceso actual */
     pid = fork();
     if (pid == 0){
-        /* el proceso hijo reemplaza su programa por el comando indicado */
-        /* desbloquea sigchld en el proceso hijo */
-        sigprocmask(SIG_SETMASK, &mascara_anterior, NULL); 
-        if(execvp(tokens[0], tokens) == -1){
+        if(background){
+            setpgid(0, 0);
+        }
+
+        if(configurar_senales_hijo() == -1){
+            _exit(1);
+        }
+
         //guarda argumentos, sin operadores de redireccion
         char *arg[256];     
 
@@ -30,45 +35,44 @@ int lanzar_proceso(char **tokens,int background, ShellState *shellState){
         if(procesar_redireccion(tokens, arg) <= 0){
             _exit(1);
         }
-
-        //el proceso hijo reemplaza su programa por el comando indicado
+        /* el proceso hijo reemplaza su programa por el comando indicado */
+        /* desbloquea sigchld en el proceso hijo */
+        sigprocmask(SIG_SETMASK, &mascara_anterior, NULL); 
         if(execvp(arg[0], arg) == -1){
             perror("error");
+            _exit(1);
         }
-        exit(EXIT_FAILURE);
     } else if (pid<0){
         /* muestra un error si no se pudo crear el proceso hijo */
         perror("error");
+        sigprocmask(SIG_SETMASK, &mascara_anterior, NULL);  
         return 0;
     } else {
         if (background) {
+            setpgid(pid, pid);  
 
-        int indice_job;
-        indice_job = agregar_job(shellState, pid, tokens);
-        if (indice_job == -1) {
+            int indice_job = agregar_job(shellState, pid, tokens);
+            if (indice_job == -1) {
 
-            /*
-             * Si no podemos registrar el job,
-             * terminamos el proceso para no dejar
-             * un hijo sin controlar.
-             */
-            kill(pid, SIGTERM);
+                /*
+                * Si no podemos registrar el job,
+                * terminamos el proceso para no dejar
+                * un hijo sin controlar.
+                */
+                kill(pid, SIGTERM);
 
-            waitpid(pid, NULL, 0);
+                waitpid(pid, NULL, 0);
 
+                sigprocmask(SIG_SETMASK, &mascara_anterior, NULL);
+
+                return 0;
+            }
+            printf("[%d] %d\n", shellState->jobs[indice_job].id, pid);
             sigprocmask(SIG_SETMASK, &mascara_anterior, NULL);
-
-            return 0;
+            return 1;
         }
-
-        printf("[%d] %d\n", shellState->jobs[indice_job].id, pid);
-
-        
-        sigprocmask(SIG_SETMASK, &mascara_anterior, NULL);
-        return 1;
     }
-
-   
+    
     do {
         wpid = waitpid(pid, &status, WUNTRACED);
     } while (
@@ -83,8 +87,12 @@ int lanzar_proceso(char **tokens,int background, ShellState *shellState){
 
     sigprocmask(SIG_SETMASK, &mascara_anterior, NULL);
 
-    return 1;
+    if(wpid > 0 && WIFSIGNALED(status) && (WTERMSIG(status) == SIGINT || WTERMSIG(status) == SIGQUIT)){
+        write(STDOUT_FILENO, "\n", 1);
     }
+
+    return 1;
+    
 }
 
 int contiene_pipe(char **tokens){
@@ -118,7 +126,7 @@ int ejecutar_pipeline(char **tokens){
             if (i == 0 || i + 1 == cantidad_tokens || tokens[i+1] == NULL ||
                 strcmp(tokens[i + 1], "|") == 0 || 
                 (i > 0 && strcmp(tokens[i - 1], "|") == 0)){
-                fprintf(stderr, "error: pipe mal colocado");
+                fprintf(stderr, "error: pipe mal colocado \n");
                 return 1;
             }
 
@@ -142,11 +150,30 @@ int ejecutar_pipeline(char **tokens){
 
         if (procesos[i] == -1){
             perror("error de fork");
+
+            //cierra descriptores
+            if(entrada_anterior != -1){
+                close(entrada_anterior);
+            }
+            if(descriptores[0] != -1){
+                close(descriptores[0]);
+            }
+            if(descriptores[1] != -1){
+                close(descriptores[1]);
+            }
+
+            for(int j = 0; j < i; j++){
+                waitpid(procesos[j], NULL, 0);
+            }
             return 1;
         }
 
         if (procesos[i] == 0){
             char *argumentos[256];
+
+            if(configurar_senales_hijo() == -1){
+                _exit(1);
+            }
 
             //recibe la salida del comando anterior
             if (entrada_anterior != -1){
