@@ -5,12 +5,18 @@ Contiene archivos .h
 ### Carpeta src
  Contiene archivos .c
 
-### Archivo CMakeLists.txt
+### Archivo makefile.mk
 Se encarga de construir el proyecto y ejecutable. 
 
-Se debe actualizar cuando se agregan archivos .c nuevos.
-## Comando de build
+Se deben actualizar los sources cuando se agregan archivos .c nuevos.
+## Comandos de build
 
-cmake -S . -B build 
+### make -f makefile.mk
 
-cmake --build build
+Este comando genera todos los archivos necesarios en la carpeta *./build-make*. 
+
+El archivo *tarea_so_1.exe* se encuentra dentro de esta carpeta. *./build-make/tarea_so_1*
+
+### make -f makefile.mk clean
+
+Este comando limpia todos los archivos generados.
