@@ -5,7 +5,7 @@
 #include <ej_background.h>
 #include <senales.h>
 
-int main(int, char**){
+int main(void){
     char *linea;
     char **tokens;
     int background;

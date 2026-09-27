@@ -28,7 +28,7 @@ static int leer_info_proc(pid_t pid, char *estado_salida, long *rss_kb, double *
     char ruta[256];
     char linea[1024];
 
-    //Lee memoria residente aproximada.
+    //Lee memoria aproximada.
     snprintf(ruta, sizeof(ruta), "/proc/%d/status", pid);
     FILE *f_status = fopen(ruta, "r");
     *rss_kb = 0; // Valor por defecto por si falla.
@@ -61,22 +61,22 @@ static int leer_info_proc(pid_t pid, char *estado_salida, long *rss_kb, double *
                 unsigned long utime = 0, stime = 0;
                 
                 // Leemos el estado (campo 3) y saltamos los campos 4 al 13, 
-                // para leer utime (14) y stime (15)[cite: 3].
+                // para leer utime (14) y stime (15).
                 sscanf(p, "%c %*d %*d %*d %*d %*d %*d %*d %*d %*d %*d %lu %lu", 
                        &estado_crudo, &utime, &stime);
                 
                 *estado_salida = estado_crudo;
                 
-                // Convertir Ticks a Segundos reales
+                // Convertir ticks a segundos reales.
                 long ticks_por_segundo = sysconf(_SC_CLK_TCK);
                 *cpu_segundos = (double)(utime + stime) / ticks_por_segundo;
             }
         }
         fclose(f_stat);
-        return 1; // Éxito
+        return 1; // éxito.
     }
     
-    return 0; // Error: el proceso probablemente murió...
+    return 0; // error: el proceso probablemente murió...
 }
 
 //Función para traducir estado.
