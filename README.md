@@ -151,7 +151,7 @@ miShell:/home/usuario/tareas_so$ pwd
 
 miShell:/home/usuario/tareas_so$ echo "hola mundo" > salida.txt
 miShell:/home/usuario/tareas_so$ cat salida.txt
-hola mundo
+"hola mundo"
 
 miShell:/home/usuario/tareas_so$ sleep 15 &
 [1] 18421
