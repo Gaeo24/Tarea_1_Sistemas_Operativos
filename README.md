@@ -165,7 +165,7 @@ miShell:/home/usuario/tareas_so$ cat salida.txt | wc -l
 miShell:/home/usuario/tareas_so$ pmon 2
 Refrescando pmon cada 2 segundos... (Ctrl+C para salir)
 PID     | Comando     | Estado    | %CPU | RSS (KB)
-18421   | sleep 15     | durmiendo | 0.0  | 1000
+18421   | sleep 15    | durmiendo | 0.0  | 1000
 
 ^C
 Saliendo del monitor pmon
@@ -178,10 +178,10 @@ miShell:/home/usuario/tareas_so$ exit
 - `pwd`: muestra el directorio actual.
 - `echo ... > salida.txt`: redirección de salida.
 - `cat salida.txt`: lectura del archivo.
-- `sleep 5 &`: proceso en segundo plano.
+- `sleep 15 &`: proceso en segundo plano.
 - `jobs`: lista jobs activos.
 - `cat salida.txt | wc -l` pipeline.
-- `pmon 1`: monitor de procesos.
+- `pmon 2`: monitor de procesos.
 - `Ctrl+C`: sale del monitor sin cerrar la shell.
 - `exit`: termina la shell.
 
